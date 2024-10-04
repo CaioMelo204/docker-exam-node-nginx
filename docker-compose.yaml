@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - docker-exam
+
+  app:
+    build:
+      context: node
+    container_name: app
+    networks:
+      - docker-exam
+    tty: true
+    depends_on:
+      - db
+    links:
+      - db:db
+
+  nginx:
+    restart: always
+    build:
+      context: nginx
+    links:
+      - app:app
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
+    networks:
+      - docker-exam
+    #    entrypoint: dockerize -wait tcp://app:3000 -timeout 60s && docker-entrypoint.sh
+
+networks:
+  docker-exam:
+    driver: bridge
