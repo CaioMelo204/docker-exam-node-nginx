@@ -22,11 +22,14 @@ services:
     container_name: app
     networks:
       - docker-exam
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s node index.js
     tty: true
     depends_on:
       - db
     links:
       - db:db
+    volumes:
+      - ./node:/usr/src/app
 
   nginx:
     restart: always
@@ -40,7 +43,6 @@ services:
       - "8080:80"
     networks:
       - docker-exam
-    #    entrypoint: dockerize -wait tcp://app:3000 -timeout 60s && docker-entrypoint.sh
 
 networks:
   docker-exam:
