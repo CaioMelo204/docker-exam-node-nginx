@@ -4,8 +4,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install
-
 ENV DOCKERIZE_VERSION v0.8.0
 
 RUN apt-get update \
